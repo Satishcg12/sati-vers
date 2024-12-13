@@ -1,0 +1,4 @@
+
+goose -dir ./db/migrations postgres  up
+
+goose -dir ./db/migrations -s create init  sql

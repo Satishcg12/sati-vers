@@ -1,9 +1,15 @@
-version: '3.8'
-
 services:
   api-gateway:
   
-    build: ./api-gateway/
+    build:
+      context: ./api-gateway/
+      dockerfile: Dockerfile
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://api-gateway:8080/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     networks:
       - app-network
     ports:
@@ -11,7 +17,19 @@ services:
     
 
   user-service:
-    build: ./user-service/
+    build: 
+      context: ./user-service/
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: ./user-service/
+          target: /app
+        - action: rebuild
+          path: ./user-service/
+
+
+
     networks:
       - app-network
 

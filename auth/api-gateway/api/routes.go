@@ -21,7 +21,7 @@ func (s *Server) routes() {
 	// Add a heartbeat route
 	s.router.Use(middleware.Heartbeat("/health"))
 
-	s.router.Handle("/api/v1/user/*", reverseProxy("http://user-service:8080"))
+	s.router.Handle("/api/v1/auth/*", reverseProxy("http://authentication-service"))
 
 }
 

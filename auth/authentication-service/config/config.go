@@ -6,10 +6,19 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
-const envPrefix = "API_GATEWAY"
+const envPrefix = "AUTH"
 
 type Configuration struct {
 	HTTPServer
+	Database
+}
+type Database struct {
+	Host     string `envconfig:"DATABASE_HOST" default:"localhost"`
+	Port     int    `envconfig:"DATABASE_PORT" default:"5432"`
+	User     string `envconfig:"DATABASE_USER" default:"satish"`
+	Password string `envconfig:"DATABASE_PASSWORD" default:"satish"`
+	Name     string `envconfig:"DATABASE_NAME" default:"authentication"`
+	SSLMode  string `envconfig:"DATABASE_SSL_MODE" default:"disable"`
 }
 
 type HTTPServer struct {

@@ -51,7 +51,7 @@ func (s *Server) Start(ctx context.Context) {
 		log.Printf("http.ListenAndServe failed: %v\n", err)
 	}
 
-	log.Println("Shutdown gracefully")
+	log.Println("Shutdown gracefully!")
 }
 
 func handleShutdown(onShutdownSignal func()) <-chan struct{} {

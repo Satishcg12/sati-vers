@@ -1,6 +1,5 @@
 services:
   api-gateway:
-  
     build:
       context: ./api-gateway/
       dockerfile: Dockerfile
@@ -10,29 +9,68 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
+    depends_on:
+      authentication-service:
+        condition: service_healthy
     networks:
       - app-network
     ports:
       - "8080:8080"          # Expose the application on port 8080      docker swarm init
     
 
-  user-service:
-    build: 
-      context: ./user-service/
+  authentication-service:
+    build:
+      context: ./authentication-service/
       dockerfile: Dockerfile
+    environment:
+      AUTH_DATABASE_HOST: authentication-db
+      AUTH_DATABASE_PORT: 5432
+      AUTH_DATABASE_USER: satish
+      AUTH_DATABASE_PASSWORD: satish
+      AUTH_DATABASE_NAME: authentication
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://authentication-service:8080/health"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     develop:
       watch:
         - action: sync
-          path: ./user-service/
-          target: /app
+          path: ./authentication-service
+          target: /usr/src/app
         - action: rebuild
-          path: ./user-service/
-
-
-
+          path: ./authentication-service
+          target: /usr/src/app
+    depends_on:
+      authentication-db:
+        condition: service_healthy
     networks:
       - app-network
 
+  authentication-db:
+    image: postgres:17
+    restart: always
+    shm_size: 128mb
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: satish
+      POSTGRES_PASSWORD: satish
+      POSTGRES_DB: authentication
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U satish -d authentication"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - ./authentication-db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
 networks:
   app-network:       # Enable service discovery with overlay network
+
+volumes:
+  authentication-db-data:

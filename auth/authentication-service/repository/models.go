@@ -10,6 +10,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type Salt struct {
+	ID        uuid.UUID    `json:"id"`
+	UserID    uuid.UUID    `json:"user_id"`
+	SaltValue string       `json:"salt_value"`
+	CreatedAt sql.NullTime `json:"created_at"`
+	UpdatedAt sql.NullTime `json:"updated_at"`
+}
+
 type User struct {
 	ID        uuid.UUID      `json:"id"`
 	Username  string         `json:"username"`
@@ -20,9 +28,11 @@ type User struct {
 }
 
 type UserCredential struct {
-	ID           uuid.UUID     `json:"id"`
-	UserID       uuid.NullUUID `json:"user_id"`
-	PasswordHash string        `json:"password_hash"`
-	CreatedAt    sql.NullTime  `json:"created_at"`
-	UpdatedAt    sql.NullTime  `json:"updated_at"`
+	ID              uuid.UUID      `json:"id"`
+	UserID          uuid.NullUUID  `json:"user_id"`
+	CredentialType  string         `json:"credential_type"`
+	CredentialValue sql.NullString `json:"credential_value"`
+	LastUsed        sql.NullTime   `json:"last_used"`
+	CreatedAt       sql.NullTime   `json:"created_at"`
+	UpdatedAt       sql.NullTime   `json:"updated_at"`
 }

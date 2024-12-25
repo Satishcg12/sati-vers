@@ -26,7 +26,7 @@ func (s *Server) LoadRoutes() {
 	authRoutes := s.router.Group("/api/v1/auth")
 
 	repo := repository.New(s.db)
-	handler := NewHandler(repo)
+	handler := NewHandler(repo, s.db)
 	s.router.Validator = utils.NewValidator()
 
 	authRoutes.POST("/register", handler.Register)

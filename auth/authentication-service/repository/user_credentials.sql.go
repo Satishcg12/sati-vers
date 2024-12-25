@@ -7,28 +7,32 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
 
 const createCredentials = `-- name: CreateCredentials :one
-INSERT INTO user_credentials (user_id, password_hash)
-VALUES ($1, $2)
-RETURNING id, user_id, password_hash, created_at, updated_at
+INSERT INTO user_credentials (user_id, credential_type, credential_value)
+VALUES ($1, $2, $3)
+RETURNING id, user_id, credential_type, credential_value, last_used, created_at, updated_at
 `
 
 type CreateCredentialsParams struct {
-	UserID       uuid.NullUUID `json:"user_id"`
-	PasswordHash string        `json:"password_hash"`
+	UserID          uuid.NullUUID  `json:"user_id"`
+	CredentialType  string         `json:"credential_type"`
+	CredentialValue sql.NullString `json:"credential_value"`
 }
 
 func (q *Queries) CreateCredentials(ctx context.Context, arg CreateCredentialsParams) (UserCredential, error) {
-	row := q.db.QueryRowContext(ctx, createCredentials, arg.UserID, arg.PasswordHash)
+	row := q.db.QueryRowContext(ctx, createCredentials, arg.UserID, arg.CredentialType, arg.CredentialValue)
 	var i UserCredential
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
-		&i.PasswordHash,
+		&i.CredentialType,
+		&i.CredentialValue,
+		&i.LastUsed,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -36,7 +40,7 @@ func (q *Queries) CreateCredentials(ctx context.Context, arg CreateCredentialsPa
 }
 
 const getCredentialsByUserId = `-- name: GetCredentialsByUserId :one
-SELECT id, user_id, password_hash, created_at, updated_at
+SELECT id, user_id, credential_type, credential_value, last_used, created_at, updated_at
 FROM user_credentials
 WHERE user_id = $1
 `
@@ -47,7 +51,9 @@ func (q *Queries) GetCredentialsByUserId(ctx context.Context, userID uuid.NullUU
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
-		&i.PasswordHash,
+		&i.CredentialType,
+		&i.CredentialValue,
+		&i.LastUsed,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

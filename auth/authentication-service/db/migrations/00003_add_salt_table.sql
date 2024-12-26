@@ -11,5 +11,5 @@ CREATE TABLE salts (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE salt;
+DROP TABLE salts;
 -- +goose StatementEnd

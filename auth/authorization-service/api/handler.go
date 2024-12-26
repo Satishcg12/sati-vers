@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"github.com/satishcg12/sati-vers/auth/authentication-service/repository"
-	"github.com/satishcg12/sati-vers/auth/authentication-service/types"
-	"github.com/satishcg12/sati-vers/auth/authentication-service/utils"
+	"github.com/satishcg12/sati-vers/auth/authorization-service/repository"
+	"github.com/satishcg12/sati-vers/auth/authorization-service/types"
+	"github.com/satishcg12/sati-vers/auth/authorization-service/utils"
 )
 
 type Handler struct {

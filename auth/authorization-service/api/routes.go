@@ -5,8 +5,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/satishcg12/sati-vers/auth/authentication-service/repository"
-	"github.com/satishcg12/sati-vers/auth/authentication-service/utils"
+	"github.com/satishcg12/sati-vers/auth/authorization-service/repository"
+	"github.com/satishcg12/sati-vers/auth/authorization-service/utils"
 )
 
 func (s *Server) LoadRoutes() {

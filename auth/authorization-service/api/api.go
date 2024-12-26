@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/satishcg12/sati-vers/auth/authentication-service/config"
+	"github.com/satishcg12/sati-vers/auth/authorization-service/config"
 )
 
 type Server struct {

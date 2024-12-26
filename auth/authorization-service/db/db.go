@@ -7,7 +7,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
-	"github.com/satishcg12/sati-vers/auth/authentication-service/config"
+	"github.com/satishcg12/sati-vers/auth/authorization-service/config"
 )
 
 type Database struct {

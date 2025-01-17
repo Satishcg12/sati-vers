@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/satishcg12/sati-vers/auth/authorization-service/api"
-	"github.com/satishcg12/sati-vers/auth/authorization-service/config"
-	"github.com/satishcg12/sati-vers/auth/authorization-service/db"
+	"github.com/Satishcg12/sati-vers/sso-mono/api"
+	"github.com/Satishcg12/sati-vers/sso-mono/config"
+	"github.com/Satishcg12/sati-vers/sso-mono/db"
 )
 
 func main() {

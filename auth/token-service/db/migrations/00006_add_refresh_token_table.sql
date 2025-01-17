@@ -1,11 +1,9 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE IF NOT EXISTS authorization_code (
-    authorization_code_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE IF NOT EXISTS refresh_token (
+    refresh_token UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     client_id UUID NOT NULL,
     user_id UUID NOT NULL,
-    authorization_code TEXT NOT NULL,
-    scopes TEXT[] NOT NULL,
     expires_in TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -15,5 +13,5 @@ CREATE TABLE IF NOT EXISTS authorization_code (
 
 -- +goose Down
 -- +goose StatementBegin
-SELECT 'down SQL query';
+DROP TABLE IF EXISTS refresh_token;
 -- +goose StatementEnd

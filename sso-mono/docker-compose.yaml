@@ -1,0 +1,42 @@
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=your_secret_key
+      - PORT=8000
+      - DATABASE_HOST=db
+      - DATABASE_NAME=mydb
+      - DATABASE_USER=myuser
+      - DATABASE_PASSWORD=mypassword
+      - DATABASE_PORT=5432
+    ports:
+      - "8000:8000"
+    networks:
+      - mynet
+    depends_on:
+      - db
+
+  db:
+    image: postgres:17
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    networks:
+      - mynet
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    
+volumes:
+  db_data:
+
+networks:
+  mynet:
+    driver: bridge

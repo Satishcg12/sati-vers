@@ -27,9 +27,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-
-	migrationsPath := "db/migrations"
-	err = database.AutoMigrate(db, migrationsPath)
+	err = database.AutoMigrate(db)
 	if err != nil {
 		log.Fatal(err)
 	}

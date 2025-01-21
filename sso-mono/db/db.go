@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"embed"
 	"fmt"
 	"log"
 
@@ -19,6 +20,9 @@ type IDatabase interface {
 	AutoMigrate(*sql.DB, string) error
 }
 
+//go:embed migrations/*.sql
+var embedMigrations embed.FS
+
 func NewDatabase(cfg config.Database) *Database {
 	return &Database{
 		dbCfg: cfg,
@@ -35,9 +39,10 @@ func (d *Database) Connect() (*sql.DB, error) {
 	return db, nil
 }
 
-func (d *Database) AutoMigrate(db *sql.DB, migrationsPath string) error {
+func (d *Database) AutoMigrate(db *sql.DB) error {
+	goose.SetBaseFS(embedMigrations)
 	goose.SetDialect("postgres")
-	err := goose.Up(db, migrationsPath)
+	err := goose.Up(db, "migrations")
 	if err != nil {
 		log.Fatal(err)
 	}

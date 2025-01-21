@@ -21,7 +21,7 @@ FROM alpine:latest
 WORKDIR /usr/src/app
 
 # Copy the binary from the builder stage
-COPY --from=builder /usr/src/sso-mono .
+COPY --from=builder /usr/src/sso-mono/bin .
 
 # Run the binary
-CMD ["./bin/app"]
+CMD ["./app"]

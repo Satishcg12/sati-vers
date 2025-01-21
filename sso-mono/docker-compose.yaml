@@ -7,7 +7,7 @@ services:
       - DEBUG=1
       - SECRET_KEY=your_secret_key
       - PORT=8000
-      - DATABASE_HOST=db
+      - DATABASE_HOST=postgres-db
       - DATABASE_NAME=mydb
       - DATABASE_USER=myuser
       - DATABASE_PASSWORD=mypassword
@@ -17,12 +17,19 @@ services:
     networks:
       - mynet
     depends_on:
-      - db
+      postgres-db:
+        condition: service_healthy
 
-  db:
+  postgres-db:
     image: postgres:17
     restart: always
     shm_size: 128mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     environment:
       POSTGRES_DB: mydb
       POSTGRES_USER: myuser
@@ -32,10 +39,10 @@ services:
     networks:
       - mynet
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - ./postgresql-db-data:/var/lib/postgresql/data
     
 volumes:
-  db_data:
+  postgresql-db-data:
 
 networks:
   mynet:

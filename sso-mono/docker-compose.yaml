@@ -4,6 +4,14 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin
+      - ADMIN_EMAIL=admin@example.com
+      - SSO_CLIENT_ID=your_client_id
+      - SSO_CLIENT_SECRET=your_client_secret
+      - SSO_AUTHORIZATION_URL=your_authorization_url
+      - SSO_TOKEN_URL=your_token_url
+      
       - DEBUG=1
       - SECRET_KEY=your_secret_key
       - PORT=8000

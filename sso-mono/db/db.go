@@ -39,6 +39,22 @@ func (d *Database) Connect() (*sql.DB, error) {
 	return db, nil
 }
 
+func (d *Database) Setup() (*sql.DB, error) {
+	db, err := d.Connect()
+	if err != nil {
+		return nil, err
+	}
+	err = d.AutoMigrate(db)
+	if err != nil {
+		return nil, err
+	}
+
+	// initial data
+	err = d.InsertInitialData(db)
+
+	return db, nil
+}
+
 func (d *Database) AutoMigrate(db *sql.DB) error {
 	goose.SetBaseFS(embedMigrations)
 	goose.SetDialect("postgres")
@@ -46,5 +62,23 @@ func (d *Database) AutoMigrate(db *sql.DB) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	return nil
+}
+
+func (d *Database) InsertInitialData(db *sql.DB) error {
+
+	// Check if client exists
+	var clientCount int
+	err := db.QueryRow("SELECT COUNT(*) FROM clients").Scan(&clientCount)
+	if err != nil {
+		return err
+	}
+	if clientCount == 0 {
+		_, err = db.Exec("INSERT INTO clients (name,) VALUES ($1, $2)", 1, d.dbCfg.Initial.ClientName, d.dbCfg.Initial.ClientSecret)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }

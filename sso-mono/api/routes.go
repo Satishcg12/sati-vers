@@ -24,16 +24,23 @@ func (s *Server) LoadRoutes() {
 		return c.String(http.StatusOK, "OK")
 	})
 
-	authRoutes := s.router.Group("/api/v1/auth")
+	r := s.router.Group("/api/v1")
 
 	repo := repository.New(s.db)
 	handler := NewHandler(repo, s.db)
 	s.router.Validator = utils.NewValidator()
+	authGroup := r.Group("/auth")
 
-	authRoutes.POST("/register", handler.Register)
-	authRoutes.POST("/login", handler.Login)
-	authRoutes.POST("/logout", func(c echo.Context) error {
+	authGroup.POST("/register", handler.Register)
+	authGroup.POST("/login", handler.Login)
+	authGroup.POST("/logout", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Logout")
 	})
+
+	// authRoutes.POST("/register", handler.Register)
+	// authRoutes.POST("/login", handler.Login)
+	// authRoutes.POST("/logout", func(c echo.Context) error {
+	// 	return c.String(http.StatusOK, "Logout")
+	// })
 
 }

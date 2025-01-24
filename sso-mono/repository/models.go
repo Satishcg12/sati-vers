@@ -6,33 +6,83 @@ package repository
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 )
 
-type Salt struct {
-	ID        uuid.UUID    `json:"id"`
-	UserID    uuid.UUID    `json:"user_id"`
-	SaltValue string       `json:"salt_value"`
-	CreatedAt sql.NullTime `json:"created_at"`
-	UpdatedAt sql.NullTime `json:"updated_at"`
+type AuthCode struct {
+	AuthCodeID   uuid.UUID     `json:"auth_code_id"`
+	UserID       uuid.NullUUID `json:"user_id"`
+	AuthCodeHash string        `json:"auth_code_hash"`
+	RedirectUri  string        `json:"redirect_uri"`
+	Scopes       []string      `json:"scopes"`
+	Revoked      sql.NullBool  `json:"revoked"`
+	ExpiresAt    time.Time     `json:"expires_at"`
+	CreatedAt    sql.NullTime  `json:"created_at"`
+	UpdatedAt    sql.NullTime  `json:"updated_at"`
+}
+
+type Client struct {
+	ClientID           uuid.UUID      `json:"client_id"`
+	ClientSecretHash   string         `json:"client_secret_hash"`
+	ClientName         string         `json:"client_name"`
+	ClientDescription  sql.NullString `json:"client_description"`
+	ClinetLogoUrl      sql.NullString `json:"clinet_logo_url"`
+	ClientHomepageUrl  sql.NullString `json:"client_homepage_url"`
+	ClientRedirectUris []string       `json:"client_redirect_uris"`
+	ClientScopes       []string       `json:"client_scopes"`
+	ClientGrants       []string       `json:"client_grants"`
+	IsTrusted          sql.NullBool   `json:"is_trusted"`
+	Status             sql.NullString `json:"status"`
+	CreatedBy          uuid.NullUUID  `json:"created_by"`
+	CreatedAt          sql.NullTime   `json:"created_at"`
+	UpdatedAt          sql.NullTime   `json:"updated_at"`
+}
+
+type RefreshToken struct {
+	RefreshTokenID   uuid.UUID     `json:"refresh_token_id"`
+	UserID           uuid.NullUUID `json:"user_id"`
+	AuthCodeID       uuid.NullUUID `json:"auth_code_id"`
+	RefreshTokenHash string        `json:"refresh_token_hash"`
+	Scopes           []string      `json:"scopes"`
+	Revoked          sql.NullBool  `json:"revoked"`
+	ExpiresAt        time.Time     `json:"expires_at"`
+	CreatedAt        sql.NullTime  `json:"created_at"`
+	UpdatedAt        sql.NullTime  `json:"updated_at"`
+}
+
+type Session struct {
+	SessionID         uuid.UUID     `json:"session_id"`
+	UserID            uuid.NullUUID `json:"user_id"`
+	SessionTokenHash  string        `json:"session_token_hash"`
+	DeviceFingerprint string        `json:"device_fingerprint"`
+	Revoked           sql.NullBool  `json:"revoked"`
+	ExpiresAt         time.Time     `json:"expires_at"`
+	CreatedAt         sql.NullTime  `json:"created_at"`
+	UpdatedAt         sql.NullTime  `json:"updated_at"`
 }
 
 type User struct {
-	ID        uuid.UUID      `json:"id"`
-	Username  string         `json:"username"`
-	Email     string         `json:"email"`
-	CreatedAt sql.NullTime   `json:"created_at"`
-	UpdatedAt sql.NullTime   `json:"updated_at"`
-	Status    sql.NullString `json:"status"`
+	UserID       uuid.UUID      `json:"user_id"`
+	Username     string         `json:"username"`
+	Email        string         `json:"email"`
+	PasswordHash string         `json:"password_hash"`
+	MfaSecret    sql.NullString `json:"mfa_secret"`
+	MfaEnabled   sql.NullBool   `json:"mfa_enabled"`
+	IsVerified   sql.NullBool   `json:"is_verified"`
+	Status       sql.NullString `json:"status"`
+	CreatedAt    sql.NullTime   `json:"created_at"`
+	UpdatedAt    sql.NullTime   `json:"updated_at"`
 }
 
-type UserCredential struct {
-	ID              uuid.UUID      `json:"id"`
-	UserID          uuid.NullUUID  `json:"user_id"`
-	CredentialType  string         `json:"credential_type"`
-	CredentialValue sql.NullString `json:"credential_value"`
-	LastUsed        sql.NullTime   `json:"last_used"`
-	CreatedAt       sql.NullTime   `json:"created_at"`
-	UpdatedAt       sql.NullTime   `json:"updated_at"`
+type UsersProfile struct {
+	UserProfileID uuid.UUID     `json:"user_profile_id"`
+	UserID        uuid.NullUUID `json:"user_id"`
+	FirstName     string        `json:"first_name"`
+	LastName      string        `json:"last_name"`
+	PhoneNumber   string        `json:"phone_number"`
+	DateOfBirth   time.Time     `json:"date_of_birth"`
+	CreatedAt     sql.NullTime  `json:"created_at"`
+	UpdatedAt     sql.NullTime  `json:"updated_at"`
 }

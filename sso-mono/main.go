@@ -27,7 +27,8 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	err = database.AutoMigrate(db)
+
+	db, err = database.Setup()
 	if err != nil {
 		log.Fatal(err)
 	}

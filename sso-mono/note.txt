@@ -1,1 +1,2 @@
-goose -dir ./db/migrations create add_user_table sql
+goose -dir ./db/migrations create add_user_table sql -s
+

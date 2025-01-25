@@ -2,12 +2,15 @@
 -- +goose StatementBegin
 CREATE TABLE clients (
     client_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
     client_secret_hash TEXT NOT NULL,
     client_name VARCHAR(255) UNIQUE NOT NULL,
     client_description TEXT,
     clinet_logo_url TEXT,
+    client_tos_url TEXT,
+    client_policy_url TEXT,
     client_homepage_url TEXT,
-    client_redirect_uris TEXT[],
+    client_redirect_uris TEXT[] NOT NULL,
     client_scopes TEXT[] check (clent_scopes IN ('openid', 'profile', 'email', 'offline_access')),
     client_grants TEXT[] check (client_grants IN ('authorization_code', 'client_credentials', 'refresh_token', 'password')),
     is_trusted BOOLEAN DEFAULT false,

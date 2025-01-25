@@ -32,9 +32,9 @@ type Database struct {
 }
 
 type HTTPServer struct {
-	Debug bool `envconfig:"HTTP_SERVER_DEBUG" default:"true"`
-	Port  int  `envconfig:"PORT" default:"8080"`
-
+	Debug        bool          `envconfig:"HTTP_SERVER_DEBUG" default:"true"`
+	Port         int           `envconfig:"PORT" default:"8080"`
+	SecretKey    string        `envconfig:"SECRET_KEY" default:"S3cr3t"`
 	IdleTimeout  time.Duration `envconfig:"HTTP_SERVER_IDLE_TIMEOUT" default:"60s"`
 	ReadTimeout  time.Duration `envconfig:"HTTP_SERVER_READ_TIMEOUT" default:"1s"`
 	WriteTimeout time.Duration `envconfig:"HTTP_SERVER_WRITE_TIMEOUT" default:"2s"`

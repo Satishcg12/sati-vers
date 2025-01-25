@@ -11,11 +11,11 @@ import (
 )
 
 type Algon2Params struct {
-	Memory      uint32
-	Iterations  uint32
-	Parallelism uint8
-	SaltLength  uint32
-	KeyLength   uint32
+	Memory      uint32 // memory in KB (it represents the amount of memory that the algorithm uses)
+	Iterations  uint32 // number of iterations (it represents the number of iterations that the algorithm performs)
+	Parallelism uint8  // parallelism (it represents the number of threads that the algorithm uses)
+	SaltLength  uint32 // salt length (it represents the length of the salt)
+	KeyLength   uint32 // key length (it represents the length of the key)
 }
 
 func GenerateString(len int) (string, error) {

@@ -4,13 +4,13 @@ go 1.23.5
 
 require (
 	github.com/go-playground/validator/v10 v10.24.0
+	github.com/golang-jwt/jwt/v4 v4.5.1
 	github.com/google/uuid v1.6.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.24.1
 	golang.org/x/crypto v0.32.0
-	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8
 )
 
 require (

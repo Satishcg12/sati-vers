@@ -14,6 +14,7 @@ import (
 type AuthCode struct {
 	AuthCodeID   uuid.UUID     `json:"auth_code_id"`
 	UserID       uuid.NullUUID `json:"user_id"`
+	ClientID     uuid.NullUUID `json:"client_id"`
 	AuthCodeHash string        `json:"auth_code_hash"`
 	RedirectUri  string        `json:"redirect_uri"`
 	Scopes       []string      `json:"scopes"`
@@ -25,10 +26,13 @@ type AuthCode struct {
 
 type Client struct {
 	ClientID           uuid.UUID      `json:"client_id"`
+	OwnerID            uuid.NullUUID  `json:"owner_id"`
 	ClientSecretHash   string         `json:"client_secret_hash"`
 	ClientName         string         `json:"client_name"`
 	ClientDescription  sql.NullString `json:"client_description"`
 	ClinetLogoUrl      sql.NullString `json:"clinet_logo_url"`
+	ClientTosUrl       sql.NullString `json:"client_tos_url"`
+	ClientPolicyUrl    sql.NullString `json:"client_policy_url"`
 	ClientHomepageUrl  sql.NullString `json:"client_homepage_url"`
 	ClientRedirectUris []string       `json:"client_redirect_uris"`
 	ClientScopes       []string       `json:"client_scopes"`
@@ -43,6 +47,7 @@ type Client struct {
 type RefreshToken struct {
 	RefreshTokenID   uuid.UUID     `json:"refresh_token_id"`
 	UserID           uuid.NullUUID `json:"user_id"`
+	ClientID         uuid.NullUUID `json:"client_id"`
 	AuthCodeID       uuid.NullUUID `json:"auth_code_id"`
 	RefreshTokenHash string        `json:"refresh_token_hash"`
 	Scopes           []string      `json:"scopes"`

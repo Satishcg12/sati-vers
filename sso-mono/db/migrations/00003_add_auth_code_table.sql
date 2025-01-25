@@ -3,6 +3,7 @@
 CREATE TABLE auth_codes (
     auth_code_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+    client_id UUID REFERENCES clients(client_id) ON DELETE CASCADE,
     auth_code_hash TEXT NOT NULL,
     redirect_uri TEXT NOT NULL,
     scopes TEXT[],

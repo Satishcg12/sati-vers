@@ -13,7 +13,7 @@ import (
 )
 
 const getClientById = `-- name: GetClientById :one
-SELECT client_id, client_secret_hash, client_name, client_description, clinet_logo_url, client_homepage_url, client_redirect_uris, client_scopes, client_grants, is_trusted, status, created_by, created_at, updated_at
+SELECT client_id, owner_id, client_secret_hash, client_name, client_description, clinet_logo_url, client_tos_url, client_policy_url, client_homepage_url, client_redirect_uris, client_scopes, client_grants, is_trusted, status, created_by, created_at, updated_at
 FROM clients
 WHERE client_id = $1
 LIMIT 1
@@ -24,10 +24,13 @@ func (q *Queries) GetClientById(ctx context.Context, clientID uuid.UUID) (Client
 	var i Client
 	err := row.Scan(
 		&i.ClientID,
+		&i.OwnerID,
 		&i.ClientSecretHash,
 		&i.ClientName,
 		&i.ClientDescription,
 		&i.ClinetLogoUrl,
+		&i.ClientTosUrl,
+		&i.ClientPolicyUrl,
 		&i.ClientHomepageUrl,
 		pq.Array(&i.ClientRedirectUris),
 		pq.Array(&i.ClientScopes),

@@ -11,13 +11,18 @@ CREATE TABLE clients (
     client_policy_url TEXT,
     client_homepage_url TEXT,
     client_redirect_uris TEXT[] NOT NULL,
-    client_scopes TEXT[] check (clent_scopes IN ('openid', 'profile', 'email', 'offline_access')),
-    client_grants TEXT[] check (client_grants IN ('authorization_code', 'client_credentials', 'refresh_token', 'password')),
+    client_scopes TEXT[] NOT NULL,
+    client_grants TEXT[] NOT NULL,
     is_trusted BOOLEAN DEFAULT false,
     status VARCHAR(255) DEFAULT 'active',
     created_by UUID REFERENCES users(user_id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+
+    -- scopes: [openid, profile, email, phone, address, offline_access]
+    
+    -- grants: [authorization_code, implicit, password, client_credentials, refresh_token]
+
 );
 -- +goose StatementEnd
 

@@ -1,0 +1,59 @@
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: dev.Dockerfile
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin
+      - ADMIN_EMAIL=admin@example.com
+      - SSO_CLIENT_ID=your_client_id
+      - SSO_CLIENT_SECRET=your_client_secret
+      - SSO_AUTHORIZATION_URL=your_authorization_url
+      - SSO_TOKEN_URL=your_token_url
+      
+      - DEBUG=1
+      - SECRET_KEY=your_secret_key
+      - PORT=8000
+      - DATABASE_HOST=postgres-db
+      - DATABASE_NAME=mydb
+      - DATABASE_USER=myuser
+      - DATABASE_PASSWORD=mypassword
+      - DATABASE_PORT=5432
+    ports:
+      - "8000:8000"
+    networks:
+      - mynet
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    volumes:
+      - .:/usr/src/sso-mono
+      
+  postgres-db:
+    image: postgres:17
+    restart: always
+    shm_size: 128mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    networks:
+      - mynet
+    volumes:
+      - ./postgresql-db-data:/var/lib/postgresql/data
+    
+volumes:
+  postgresql-db-data:
+
+networks:
+  mynet:
+    driver: bridge

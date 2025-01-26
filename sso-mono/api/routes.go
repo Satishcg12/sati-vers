@@ -23,6 +23,9 @@ func (s *Server) LoadRoutes() {
 	s.router.GET("/health", func(c echo.Context) error {
 		return c.String(http.StatusOK, "OK")
 	})
+	s.router.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Welcome to SSO")
+	})
 
 	r := s.router.Group("/api/v1")
 

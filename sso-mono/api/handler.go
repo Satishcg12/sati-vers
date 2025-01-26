@@ -11,6 +11,7 @@ import (
 	"github.com/Satishcg12/sati-vers/sso-mono/repository"
 	"github.com/Satishcg12/sati-vers/sso-mono/types"
 	"github.com/Satishcg12/sati-vers/sso-mono/utils"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
@@ -40,15 +41,6 @@ type (
 		Email           string `json:"email" validate:"required,email"`
 		Password        string `json:"password" validate:"required,min=6,max=50"`
 		ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
-	}
-	LoginRequest struct {
-		Identifier   string `json:"identifier" validate:"required"`
-		Password     string `json:"password" validate:"required,min=6,max=50"`
-		ClientID     string `query:"client_id" validate:"required"`
-		RedirectURI  string `query:"response_uri" validate:"required"`
-		ResponseType string `query:"response_type" validate:"required"`
-		Scopes       string `query:"scopes" validate:"required"`
-		State        string `query:"state" validate:"required"`
 	}
 )
 
@@ -165,7 +157,16 @@ func (h *Handler) Authorize(c echo.Context) error {
 	}
 
 	// check if the client exists
-	client, err := h.repo.GetClientById(c.Request().Context(), uuid.MustParse(req.ClientID))
+	clientId, err := uuid.Parse(req.ClientID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, types.ErrorResponse{
+			Success:   false,
+			ErrorCode: "INVALID_CLIENT_ID",
+			Message:   "Invalid client id",
+		})
+	}
+
+	client, err := h.repo.GetClientById(c.Request().Context(), clientId)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, types.ErrorResponse{
 			Success:   false,
@@ -204,13 +205,21 @@ func (h *Handler) Authorize(c echo.Context) error {
 	session, err := c.Cookie("session_token")
 	if err != nil || session.Value == "" {
 		// encode the request params and redirect to login page
-		token, err := h.jwt.GenerateAuthRequestToken(utils.AuthRequestToken{
-			ClientID:     req.ClientID,
-			RedirectURI:  req.RedirectURI,
-			ResponseType: req.ResponseType,
-			Scopes:       req.Scopes,
-			State:        req.State,
+		token, err := h.jwt.GenerateJWTWtihHS256(map[string]interface{}{
+			"client_id":     req.ClientID,
+			"redirect_uri":  req.RedirectURI,
+			"response_type": req.ResponseType,
+			"scopes":        req.Scopes,
+			"state":         req.State,
+		}, jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 5)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			Issuer:    "sso-mono",
+			Subject:   "login_request",
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			ID:        uuid.New().String(),
 		})
+
 		if err != nil {
 			return c.Redirect(http.StatusFound, req.RedirectURI+"?error=server_error&state="+req.State)
 		}
@@ -261,6 +270,12 @@ func (h *Handler) Authorize(c echo.Context) error {
 }
 
 func (h *Handler) Login(c echo.Context) error {
+	type LoginRequest struct {
+		Identifier  string `json:"identifier" validate:"required"`
+		Password    string `json:"password" validate:"required"`
+		AuthRequest string `query:"auth_request" validate:"required"`
+	}
+
 	var req LoginRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, types.ErrorResponse{

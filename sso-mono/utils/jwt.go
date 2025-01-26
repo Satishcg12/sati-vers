@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"time"
-
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -30,32 +28,35 @@ func NewJWT(secretKey string) *JWT {
 		SecretKey: secretKey,
 	}
 }
-
-func (j *JWT) GenerateAuthRequestToken(claim AuthRequestToken) (string, error) {
+func (j *JWT) GenerateJWTWtihHS256(data map[string]interface{}, regClaim jwt.RegisteredClaims) (string, error) {
 
 	claims := jwt.MapClaims{
-		"client_id":     claim.ClientID,
-		"redirect_uri":  claim.RedirectURI,
-		"response_type": claim.ResponseType,
-		"scopes":        claim.Scopes,
-		"state":         claim.State,
-		"exp":           time.Now().Add(time.Hour * 1).Unix(),
-		"iat":           time.Now().Unix(),
-		"iss":           "sso-mono",
-		"aud":           "sso-mono",
+		"exp": regClaim.ExpiresAt,
+		"iat": regClaim.IssuedAt,
+		"iss": regClaim.Issuer,
+		"aud": regClaim.Audience,
+		"sub": regClaim.Subject,
+		"nbf": regClaim.NotBefore,
+		"jti": regClaim.ID,
 	}
+
+	for key, value := range data {
+		claims[key] = value
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(j.SecretKey))
 }
-func (j *JWT) GenerateAccessToken(claim AccessToken) (string, error) {
 
-	claims := jwt.MapClaims{
-		"user_id": claim.UserID,
-		"exp":     time.Now().Add(time.Hour * 1).Unix(),
+func (j *JWT) VerifyJWTWtihHS256(tokenString string) (*jwt.Token, error) {
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(j.SecretKey), nil
+	})
+	if err != nil {
+		return nil, err
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	return token.SignedString([]byte(j.SecretKey))
+	return token, nil
 }
 
 // func (j *JWT) VerifyAccessToken(tokenString string) (*jwt.Token, error) {

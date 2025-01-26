@@ -1,2 +1,5 @@
 goose -dir ./db/migrations create add_user_table sql -s
 
+for development 
+
+docker compose --file docker-compose.dev.yaml up --build
